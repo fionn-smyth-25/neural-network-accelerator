@@ -36,34 +36,4 @@ model.compile(
 
 model.fit(x_train, y_train, epochs = 10)
 
-# export weights
-
-weights = model.get_weights() # get weights
-fixed = (weights[0] * 256).astype(int) # convert to fixed point (for FPGA usage later)
-
-with open("weights.mem","w") as f:
-    for value in fixed.flatten():
-        f.write(f"{value & 0xFFFF:04X}\n")
-
-# verification
-
-predictions = model.predict(x_test)
-
-predicted = predictions.argmax(axis = 1)
-
-accuracy = (predicted == y_test).mean()
-
-print(f"Accuracy = {accuracy*100:.2f}%")
-
-# inspect individual examples
-
-import matplotlib.pyplot as plt
-
-i = 42
-
-plt.imshow(x_test[i], cmap = "gray")
-plt.savefig("example.png") 
-plt.close()
-
-print("Prediction:", predicted[i])
-print("Actual:", y_test[i])
+model.save("model.keras")
